@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password generator</title>
+    <!-- page logo -->
+    <link rel="icon" value="png" href="">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+
+
+    <style>
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .box{
+            display: flex;
+            align-items: center;
+        }
+
+        .icon{
+            margin-left: 9px;
+        }
+        .icon:hover{
+            color: blue;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 350px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .checkbox-container {
+            margin-top: 20px;
+            text-align: left;
+            /* Align text to the left */
+        }
+
+        .checkbox-container div {
+            margin-bottom: 10px;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        #rangeValue {
+            margin-left: 9px;
+        }
+
+        label {
+            margin-right: 20px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container" class="container">
+        <h4><b><span style="color: red;">Password</span> Generator</b></h4>
+        <div class="box">
+            <div class="container" id="password">
+                <!-- password content -->
+            </div>
+
+            <i id="icon" class="far fa-copy icon" onclick="copy()"></i>
+        </div>
+
+        <form class="form-inline d-flex align-items-center mt-3">
+            <label for="length">Length</label>
+            <input type="range" id="length" min="1" max="20" value="10">
+            <span id="rangeValue">10</span>
+        </form>
+        <div class="checkbox-container">
+            <div>
+                <input type="checkbox" id="upper"><label for="upper">Include Uppercase Character</label>
+            </div>
+            <div>
+                <input type="checkbox" id="lower"><label for="lower">Include Lowercase Character</label>
+            </div>
+            <div>
+                <input type="checkbox" id="number"><label for="number">Include Number</label>
+            </div>
+            <div>
+                <input type="checkbox" id="symbol"><label for="symbol">Include Symbol</label>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        function generatePassword() {
+            const length = document.getElementById("length").value;
+            const includeUpper = document.getElementById("upper").checked;
+            const includeLower = document.getElementById("lower").checked;
+            const includenumber = document.getElementById("number").checked;
+            const includesymbol = document.getElementById("symbol").checked;
+
+            const upperCharset = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            const lowerCharset = "abcdefghijklmnopqrstuvwxyz";
+            const numberCharset = "0123456789";
+            const symbolCharset = "!@#$%^&*()_+[]{}|;:',.<>?";
+
+
+            let charset = "";
+            let requiredCharacters = [];
+
+            if (includeUpper) {
+                charset += upperCharset;
+                requiredCharacters.push(upperCharset[Math.floor(Math.random() * upperCharset.length)]);
+            }
+
+            if (includeLower) {
+                charset += lowerCharset;
+                requiredCharacters.push(lowerCharset[Math.floor(Math.random() * lowerCharset.length)]);
+            }
+
+            if (includenumber) {
+                charset += numberCharset;
+                requiredCharacters.push(numberCharset[Math.floor(Math.random() * numberCharset.length)]);
+            }
+
+            if (includesymbol) {
+                charset += symbolCharset;
+                requiredCharacters.push(symbolCharset[Math.floor(Math.random() * symbolCharset.length)]);
+            }
+
+            // If no checkboxes are selected, include both upper and lower case by default
+            if (!includeUpper && !includeLower && !includenumber && !includesymbol) {
+                charset = upperCharset + lowerCharset + includenumber + includesymbol;
+            }
+
+            let password = requiredCharacters.join('');
+
+            while (password.length < length) {
+                password += charset[Math.floor(Math.random() * charset.length)];
+            }
+
+            document.getElementById('password').innerText = password;
+        }
+
+        document.getElementById("length").addEventListener("input", function () {
+            document.getElementById("rangeValue").innerText = document.getElementById("length").value;
+            generatePassword();
+        });
+
+        document.getElementById("upper").addEventListener("change", generatePassword);
+        document.getElementById("lower").addEventListener("change", generatePassword);
+        document.getElementById("number").addEventListener("change", generatePassword);
+        document.getElementById("symbol").addEventListener("change", generatePassword);
+
+        //copy the pasowrd
+        function copy() {
+            document.getElementById("icon").style.color="blue"
+            const textcopy = document.getElementById("password").textContent;
+            navigator.clipboard.writeText(textcopy).then(function () {
+                console.log("text copyed successfully");
+            }).catch((error) => {
+                console.log("error copying")
+            })
+        }
+
+        // Initial password generation
+        generatePassword();
+    </script>
+
+    <script src="https://kit.fontawesome.com/f221cacf20.js" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+
+</html>
